@@ -41,14 +41,12 @@
         });
 
         var CustomerRow = React.createClass({
-            unmount:function(){
-                var node = this.getDOMNode();
+    
+            handleDelete: function(e){
+                e.preventDefault();
+                var node =this.getDOMNode();
                 React.unmountComponentAtNode(node);
-                $(node).remove();
-            },
-
-            handleDelete: function(){
-                this.unmount()
+                node.remove();
             },
             render:function () {
                 return(
