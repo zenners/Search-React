@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="bower_components/react/react.js"></script>
+        <script src="bower_components/react/JSXTransformer.js"></script>
+        <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <title>Search for a customer</title>
+    </head>
+    <style>
+        .spacer {
+            margin-top: 100px;
+        }
+
+    </style>
+    <body>
+        <div id="container" class="container">
+            <h3> Add a customer </h3>
+        </div>
+
+
+        <script type="text/jsx">
+        /** @jsx React.DOM */
+        var date = new Date().toString();
+        var data = [
+            { name: 'Michael', date: date},
+            { name: 'Bilbo', date: date},
+            { name: 'Gandalf', date: date},
+            { name: 'Gimli', date: date},
+            { name: 'Legolas', date: date},
+            { name: 'Liv Tyler', date: date},
+            { name: 'Smaug', date: date},
+            { name: 'Thorin ', date: date},
+        ]
+
+        var CustomerName = React.createClass({
+            getInitialState: function(){
+                
+                return { data:['ben'], 
+                         name:''
+                }
+            },
+
+            onChangeName:function(e){
+                this.setState({name: e.target.value})
+            },
+
+            handleSubmit:function(){
+                e.preventDefault();
+                this.state.data.push({name: this.state.name});
+                this.setState({name:''});
+            },
+            render: function() {
+                console.log (this.state);
+                return (
+                    
+                        <form onSubmit={this.handleSubmit} action="" className="form-inline">
+                            <div className="form-group">
+                                <label>Customer Name</label>
+                                <input value={this.state.name} onChange={this.onChangeName} className="form-control" type="text" name="" id=""/>
+                                <input type="submit" className="btn btn-primary" value="Add"/>
+                             </div>
+                         </form>
+                 
+                );
+            }
+        });
+
+        var SearchBar = React.createClass({
+            handleChange: function(){
+                this.props.onFilterInput(
+                    this.refs.filterTextInput.getDOMNode().value
+                );
+            },
+            render: function() {
+                return (
+                    <div className ="row spacer">
+                        <form action="" className=" pull-left form-inline">
+                            <div className="form-group">
+                                <input ref="filterTextInput" value={this.props.filterText} onChange={this.handleChange} className="form-control" type="text" name="" id="" placeholder="search name"/>
+                            </div>
+                           
+                        </form>
+                   </div>
+                );
+            }
+        });
+
+        var CustomerRow = React.createClass({
+            render:function () {
+                console.log(this.props)
+                
+                return(
+                    <tr>
+                        <td>{this.props.user}</td>
+                        <td>{this.props.date}</td>
+                        <td><a href="" className="btn btn-danger">Remove</a></td>
+                    </tr>
+                );
+            }
+        });
+
+        var CustomerTable = React.createClass({
+            render: function() {
+              
+                    var props = this.props
+                    var rows = props.data
+                    .filter(function(user){
+                        return user.name.toLowerCase().indexOf(props.filterText.toLowerCase()) > -1;
+                    })
+                    .map(function(user){
+                        return <CustomerRow key={user.name} user={user.name} date={user.date} />
+                    })
+                    return (
+                        <div className="row">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Created </th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rows}
+                                </tbody>
+                            </table>
+                        </div>
+                    );
+                
+                
+            }
+        });
+
+        
+        var CustomerApp = React.createClass({
+           
+            getInitialState: function(){
+                return { 
+                    filterText: ''
+                };
+            },
+
+            handleFilterInput: function(filterText){
+                this.setState({
+                    filterText: filterText
+                });
+            },
+
+            render: function() {
+                return (
+                    <div>
+                        <h1> Add a customer </h1>
+                        <CustomerName name={this.state.name} />
+                        <SearchBar onFilterInput={this.handleFilterInput} filterText={this.state.filterText}  />
+                        <CustomerTable filterText={this.state.filterText} data={data} />
+                    </div>
+                );
+            }
+        });
+
+
+
+        React.renderComponent(<CustomerApp data={data} />, document.getElementById('container'));
+
+       </script>
+    </body>
+</html>
